@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent   # folder of quiz.py
 QUESTIONS_FILE = BASE_DIR / "questions.json"
 NUM_QUESTIONS_TO_ASK = 6
 NUM_LLM_GENERATED_QUESTIONS = 5
-MODEL_NAME = "gemini-2.0-flash"
+MODEL_NAME = "gemini-2.5-flash"
 API_ENV_VAR = "GEMINI_API_KEY"
 # ---------------------------------------
 
