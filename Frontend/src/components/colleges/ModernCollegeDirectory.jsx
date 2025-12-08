@@ -69,6 +69,7 @@ const ModernCollegeDirectory = () => {
       // Always fetch all colleges from directory
       const res = await API.get(`/colleges/directory`);
       let data = res.data?.data || [];
+      console.log(data)
 
       // Attach clean fields
       let list = data.map(c => ({
