@@ -23,10 +23,8 @@ import {
 } from 'lucide-react';
 import { quizAPI, collegesAPI } from '../services/api';
 import { contentAPI } from '../services/contentService';
-import { useTranslation } from 'react-i18next';
 
 const LandingPage = () => {
-  const { t } = useTranslation();
   const [stats, setStats] = useState({
     studentsGuided: 0,
     collegesListed: 0,
@@ -45,7 +43,7 @@ const LandingPage = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 4000); // 4 seconds per slide
+    }, 4000);
     return () => clearInterval(interval);
   }, []);
 
@@ -82,128 +80,128 @@ const LandingPage = () => {
 
   const heroSlides = [
     {
-      image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1470&q=80', // student studying
-      title: t('hero.slide1.title'),
-      subtitle: t('hero.slide1.subtitle'),
+      image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1470&q=80',
+      title: 'Confused about your future?',
+      subtitle: 'Discover the right subject stream and career path tailored to your interests'
     },
     {
-      image: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1470&q=80', // graduation ceremony
-      title: t('hero.slide2.title'),
-      subtitle: t('hero.slide2.subtitle'),
+      image: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1470&q=80',
+      title: 'Explore Government Colleges Near You',
+      subtitle: 'Find course details, eligibility, and facilities at government colleges'
     },
     {
-      image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1470&q=80', // career planning
-      title: t('hero.slide3.title'),
-      subtitle: t('hero.slide3.subtitle'),
+      image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1470&q=80',
+      title: 'Map Your Career Journey',
+      subtitle: 'Explore degrees and the careers they unlock'
     },
     {
-      image: 'https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=1470&q=80', // students collaborating
-      title: t('hero.slide4.title'),
-      subtitle: t('hero.slide4.subtitle'),
+      image: 'https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=1470&q=80',
+      title: 'Personalized Guidance Powered by AI',
+      subtitle: 'Personalized picks for courses, colleges, and study materials'
     }
   ];
 
   const features = [
     {
       icon: <Target className="h-8 w-8 text-blue-600" />,
-      title: t('features.quiz.title'),
-      description: t('features.quiz.desc'),
+      title: 'Aptitude & Interest Quiz',
+      description: 'Discover your strengths and interests with our comprehensive assessment.'
     },
     {
       icon: <MapPin className="h-8 w-8 text-green-600" />,
-      title: t('features.path.title'),
-      description: t('features.path.desc'),
+      title: 'Career Pathway Mapping',
+      description: 'Visualize your career journey with interactive pathway maps.'
     },
     {
       icon: <GraduationCap className="h-8 w-8 text-purple-600" />,
-      title: t('features.colleges.title'),
-      description: t('features.colleges.desc'),
+      title: 'Government Colleges Directory',
+      description: 'Explore 500+ government colleges with detailed program information.'
     },
     {
       icon: <Calendar className="h-8 w-8 text-orange-600" />,
-      title: t('features.timeline.title'),
-      description: t('features.timeline.desc'),
+      title: 'Timeline Tracker',
+      description: 'Stay on track with personalized timelines for admissions and exams.'
     },
     {
       icon: <Lightbulb className="h-8 w-8 text-pink-600" />,
-      title: t('features.guidance.title'),
-      description: t('features.guidance.desc'),
+      title: 'Personalized Guidance',
+      description: 'Get AI-powered recommendations tailored to your profile.'
     }
   ];
 
   const journeySteps = [
     {
-      step: t('journey.quiz'),
+      step: 'Take Quiz',
       icon: <Target className="h-6 w-6" />,
-      description: t('journey.quizDesc'),
+      description: 'Complete our aptitude assessment',
       color: "from-blue-500 to-blue-600"
     },
     {
-      step: t('journey.stream'),
+      step: 'Discover Stream',
       icon: <Lightbulb className="h-6 w-6" />,
-      description: t('journey.streamDesc'),
+      description: 'Find your ideal subject stream',
       color: "from-green-500 to-green-600"
     },
     {
-      step: t('journey.careers'),
+      step: 'Explore Careers',
       icon: <TrendingUp className="h-6 w-6" />,
-      description: t('journey.careersDesc'),
+      description: 'Discover exciting career options',
       color: "from-purple-500 to-purple-600"
     },
     {
-      step: t('journey.colleges'),
+      step: 'Find Colleges',
       icon: <GraduationCap className="h-6 w-6" />,
-      description: t('journey.collegesDesc'),
+      description: 'Browse suitable colleges',
       color: "from-orange-500 to-orange-600"
     },
     {
-      step: t('journey.timeline'),
+      step: 'Plan Timeline',
       icon: <Calendar className="h-6 w-6" />,
-      description: t('journey.timelineDesc'),
+      description: 'Create your success roadmap',
       color: "from-pink-500 to-pink-600"
     }
   ];
 
   const testimonials = [
     {
-      name: t('testimonials.rahul.name'),
-      class: t('testimonials.rahul.class'),
-      text: t('testimonials.rahul.quote'),
+      name: 'Rahul Sharma',
+      class: 'Class 12 Student',
+      text: 'Amazing platform! The timeline tracker ensured I never missed any important admission deadlines.',
       rating: 5,
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
     },
     {
-      name: t('testimonials.ananya.name'),
-      class: t('testimonials.ananya.class'),
-      text: t('testimonials.ananya.quote'),
+      name: 'Ananya Patel',
+      class: 'Commerce Graduate',
+      text: 'Found the perfect college for my CA course through their detailed college directory. Highly recommended!',
       rating: 5,
       image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face"
     },
     {
-      name: t('testimonials.rohan.name'),
-      class: t('testimonials.rohan.class'),
-      text: t('testimonials.rohan.quote'),
+      name: 'Rohan Mehta',
+      class: 'Class 12, Science',
+      text: 'The AI recommendations were spot on! Helped me choose between engineering branches.',
       rating: 4,
       image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=150&h=150&fit=crop&crop=face"
     },
     {
-      name: t('testimonials.sneha.name'),
-      class: t('testimonials.sneha.class'),
-      text: t('testimonials.sneha.quote'),
+      name: 'Sneha Sharma',
+      class: 'Class 10',
+      text: 'Thanks to the study resources, I aced my board exams. Great platform!',
       rating: 5,
       image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=150&h=150&fit=crop&crop=face"
     },
     {
-      name: t('testimonials.arjun.name'),
-      class: t('testimonials.arjun.class'),
-      text: t('testimonials.arjun.quote'),
+      name: 'Arjun Nair',
+      class: 'Class 12, Arts',
+      text: 'Discovered my interest in arts through the quiz. Now pursuing my passion!',
       rating: 5,
       image: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?w=150&h=150&fit=crop&crop=face"
     },
     {
-      name: t('testimonials.priya.name'),
-      class: t('testimonials.priya.class'),
-      text: t('testimonials.priya.quote'),
+      name: 'Priya Singh',
+      class: 'Science Student',
+      text: 'The career quiz helped me discover my passion for environmental science. Now I\'m pursuing my dream course!',
       rating: 4,
       image: "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=150&h=150&fit=crop&crop=face"
     }
@@ -215,27 +213,6 @@ const LandingPage = () => {
 
   const prevTestimonial = () => {
     setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 1 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 1 },
-    visible: {
-      y: 20,
-      opacity: 1,
-      transition: {
-        duration: 1
-      }
-    }
   };
 
   return (
@@ -252,12 +229,10 @@ const LandingPage = () => {
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url(${heroSlides[currentSlide].image})` }}
           >
-            {/* Dark overlay for text readability */}
             <div className="absolute inset-0 bg-black bg-opacity-60"></div>
           </motion.div>
         </AnimatePresence>
 
-        {/* Content */}
         <div className="relative z-10 max-w-4xl px-6 text-center text-white">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
@@ -272,23 +247,23 @@ const LandingPage = () => {
               </h1>
               <p className="text-xl md:text-2xl max-w-3xl mx-auto drop-shadow-md mb-10">
                 {heroSlides[currentSlide].subtitle}
-              </p>
+              </p></motion.div>
+          </AnimatePresence>
               <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                <Link to="/quiz">
+                <Link to="/login">
                   <Button size="lg" className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-8 py-4 text-lg rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
                     <Lightbulb className="mr-2 h-5 w-5" />
-                    {t('buttons.takeQuiz')}
+                    Take the Quiz
                   </Button>
                 </Link>
                 <Link to="/colleges">
                   <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg rounded-full backdrop-blur-sm bg-white/10">
                     <MapPin className="mr-2 h-5 w-5" />
-                    {t('buttons.exploreColleges')}
+                    Explore Colleges
                   </Button>
                 </Link>
               </div>
-            </motion.div>
-          </AnimatePresence>
+            
         </div>
       </section>
 
@@ -302,22 +277,22 @@ const LandingPage = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
-              {t('features.title')}
+              Unlock Your Potential
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              {t('features.subtitle')}
+              Discover the tools that will guide you towards your dream career
             </p>
           </motion.div>
 
-          <motion.div
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <motion.div key={index} variants={itemVariants}>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
                 <Card className="text-center hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-0 bg-gradient-to-br from-white to-gray-50 group">
                   <CardContent className="p-8">
                     <motion.div
@@ -335,16 +310,11 @@ const LandingPage = () => {
                     <p className="text-gray-600">
                       {feature.description}
                     </p>
-                    <motion.div
-                      className="mt-4 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                      initial={{ width: 0 }}
-                      whileHover={{ width: "100%" }}
-                    />
                   </CardContent>
                 </Card>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -358,51 +328,49 @@ const LandingPage = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
-              {t('journey.title')}
+              Your Journey Starts Here
             </h2>
             <p className="text-xl text-gray-600">
-              {t('journey.step1.description')}
+              Begin your personalized career discovery
             </p>
           </motion.div>
 
-          <div className="relative">
-            <div className="grid lg:grid-cols-5 gap-9">
-              {journeySteps.map((step, index) => (
+          <div className="grid lg:grid-cols-5 gap-9">
+            {journeySteps.map((step, index) => (
+              <motion.div
+                key={index}
+                className="text-center relative mt-6"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.2 }}
+              >
                 <motion.div
-                  key={index}
-                  className="text-center relative mt-6"
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.2 }}
+                  className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r ${step.color} flex items-center justify-center text-white shadow-lg`}
+                  whileHover={{ scale: 1.1, rotate: 360 }}
+                  transition={{ duration: 0.5 }}
                 >
-                  <motion.div
-                    className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r ${step.color} flex items-center justify-center text-white shadow-lg`}
-                    whileHover={{ scale: 1.1, rotate: 360 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    {step.icon}
-                  </motion.div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    {step.step}
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    {step.description}
-                  </p>
-                  {index < journeySteps.length - 1 && (
-                    <motion.div
-                      className="hidden lg:block absolute top-5 -right-4 text-purple-400"
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.2 + 0.5 }}
-                    >
-                      <ArrowRight className="h-6 w-6" />
-                    </motion.div>
-                  )}
+                  {step.icon}
                 </motion.div>
-              ))}
-            </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  {step.step}
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  {step.description}
+                </p>
+                {index < journeySteps.length - 1 && (
+                  <motion.div
+                    className="hidden lg:block absolute top-5 -right-4 text-purple-400"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.2 + 0.5 }}
+                  >
+                    <ArrowRight className="h-6 w-6" />
+                  </motion.div>
+                )}
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -417,19 +385,19 @@ const LandingPage = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl md:text-5xl font-bold mb-4">
-              {t('whyUs.title')}
+              Why Choose Us?
             </h2>
             <p className="text-xl text-blue-100">
-              {t('impact.subheading')}
+              See how we're making a difference in students' lives
             </p>
           </motion.div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
             {[
-              { number: `${stats.studentsGuided.toLocaleString()}+`, label: t('stats.studentsGuided'), icon: <Users className="h-8 w-8" /> },
-              { number: `${stats.collegesListed}+`, label: t('stats.collegesListed'), icon: <GraduationCap className="h-8 w-8" /> },
-              { number: `${stats.careerPaths}+`, label: t('stats.careerPaths'), icon: <TrendingUp className="h-8 w-8" /> },
-              { number: `${stats.studyResources}+`, label: t('stats.studyResources'), icon: <BookOpen className="h-8 w-8" /> }
+              { number: `${stats.studentsGuided.toLocaleString()}+`, label: 'Students Guided', icon: <Users className="h-8 w-8" /> },
+              { number: `${stats.collegesListed}+`, label: 'Colleges Listed', icon: <GraduationCap className="h-8 w-8" /> },
+              { number: `${stats.careerPaths}+`, label: 'Career Paths', icon: <TrendingUp className="h-8 w-8" /> },
+              { number: `${stats.studyResources}+`, label: 'Study Resources', icon: <BookOpen className="h-8 w-8" /> }
             ].map((stat, index) => (
               <motion.div
                 key={index}
@@ -450,7 +418,6 @@ const LandingPage = () => {
             ))}
           </div>
 
-          {/* Trust Badges */}
           <motion.div
             className="flex flex-wrap justify-center gap-8"
             initial={{ opacity: 0, y: 20 }}
@@ -459,15 +426,15 @@ const LandingPage = () => {
           >
             <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
               <Award className="h-6 w-6 text-yellow-300 mr-3" />
-              <span className="font-semibold">{t('impact.award')}</span>
+              <span className="font-semibold">Award-Winning Platform</span>
             </div>
             <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
               <Shield className="h-6 w-6 text-green-300 mr-3" />
-              <span className="font-semibold">{t('impact.collaboration')}</span>
+              <span className="font-semibold">Government Collaboration</span>
             </div>
             <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
               <CheckCircle className="h-6 w-6 text-blue-300 mr-3" />
-              <span className="font-semibold">{t('impact.verified')}</span>
+              <span className="font-semibold">Verified Content</span>
             </div>
           </motion.div>
         </div>
@@ -483,10 +450,10 @@ const LandingPage = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
-              {t('testimonials.heading')}
+              What Students Say
             </h2>
             <p className="text-xl text-gray-600">
-              {t('testimonials.subheading')}
+              Hear from our successful users
             </p>
           </motion.div>
 
@@ -525,12 +492,7 @@ const LandingPage = () => {
             </motion.div>
 
             <div className="flex justify-center mt-8 space-x-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={prevTestimonial}
-                className="rounded-full"
-              >
+              <Button variant="outline" size="sm" onClick={prevTestimonial} className="rounded-full">
                 <ChevronLeft className="h-4 w-4" />
               </Button>
               <div className="flex space-x-2">
@@ -544,12 +506,7 @@ const LandingPage = () => {
                   />
                 ))}
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={nextTestimonial}
-                className="rounded-full"
-              >
+              <Button variant="outline" size="sm" onClick={nextTestimonial} className="rounded-full">
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
@@ -558,48 +515,49 @@ const LandingPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      {/* <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-xl font-bold mb-4">{t('scenarioBuilderTitle')}</h3>
+              <h3 className="text-xl font-bold mb-4">Apni Disha</h3>
               <p className="text-gray-400">
-                {t('footer.description')}
+                Empowering students to make informed decisions about their future through personalized guidance and comprehensive resources.
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">{t('footer.quickLinks')}</h4>
+              <h4 className="font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><Link to="/quiz" className="hover:text-white">{t('footer.careerQuiz')}</Link></li>
-                <li><Link to="/colleges" className="hover:text-white">{t('footer.colleges')}</Link></li>
-                <li><Link to="/content" className="hover:text-white">{t('footer.studyMaterials')}</Link></li>
-                <li><Link to="/timeline" className="hover:text-white">{t('footer.timeline')}</Link></li>
+                <li><Link to="/quiz" className="hover:text-white">Career Quiz</Link></li>
+                <li><Link to="/colleges" className="hover:text-white">Colleges</Link></li>
+                <li><Link to="/content" className="hover:text-white">Study Materials</Link></li>
+                <li><Link to="/timeline" className="hover:text-white">Timeline</Link></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">{t('footer.resources')}</h4>
+              <h4 className="font-semibold mb-4">Resources</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><Link to="/recommendations" className="hover:text-white">{t('footer.recommendations')}</Link></li>
-                <li><Link to="/profile" className="hover:text-white">{t('footer.profile')}</Link></li>
-                <li><Link to="/bookmarks" className="hover:text-white">{t('footer.savedItems')}</Link></li>
+                <li><Link to="/recommendations" className="hover:text-white">Recommendations</Link></li>
+                <li><Link to="/profile" className="hover:text-white">Profile</Link></li>
+                <li><Link to="/bookmarks" className="hover:text-white">Saved Items</Link></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">{t('footer.contact')}</h4>
+              <h4 className="font-semibold mb-4">Contact</h4>
               <p className="text-gray-400">
-                {t('footer.contactDesc')}
+                Have questions? We're here to help you on your career journey.
               </p>
             </div>
           </div>
 
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>{t('footer.copyright')}</p>
+            <p>© 2024 Career & Education Advisor. All rights reserved.</p>
           </div>
         </div>
-      </footer>
+      </footer> */}
+      {/* <Footer/> */}
     </div>
   );
 };

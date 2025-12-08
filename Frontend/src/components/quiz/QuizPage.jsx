@@ -575,7 +575,7 @@ const QuizPage = () => {
           </main>
 
           {/* AI Mentor */}
-          <aside className="hidden md:block sticky top-8 self-start">
+          {/* <aside className="hidden md:block sticky top-8 self-start">
             <Card className="rounded-2xl shadow-lg border-2 border-blue-100">
               <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-t-2xl">
                 <CardTitle className="flex items-center gap-2">
@@ -621,7 +621,7 @@ const QuizPage = () => {
                 </div>
               </CardContent>
             </Card>
-          </aside>
+          </aside> */}
         </div>
       </div>
     </div>

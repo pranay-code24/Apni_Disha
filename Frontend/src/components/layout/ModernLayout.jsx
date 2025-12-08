@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import ModernNavbar from './ModernNavbar';
+import AIMentorFloatingChat from '@/chat/AIMentorFloatingChat';
 
 const ModernLayout = ({ children }) => {
   return (
@@ -8,6 +9,7 @@ const ModernLayout = ({ children }) => {
       <main className="font-inter">
         {children}
       </main>
+      <AIMentorFloatingChat />
     </div>
   );
 };

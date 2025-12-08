@@ -37,6 +37,7 @@ import { LanguageProvider } from "./components/context/LanguageContext";
 import ClerkProtectedRoute from "./components/auth/ClerkProtectedRoute";
 import ClerkEventsRedirect from "./clerk-events";
 import Roadmap from "./components/roadmap/Roadmap";
+import Footer from "./components/layout/Footer";
 
 const NotFound = () => (
   <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -81,9 +82,12 @@ const appRouter = createBrowserRouter([
   {
     path: "/",
     element: (
-      <ModernLayout>
+      
+        <ModernLayout>
         <LandingPage />
       </ModernLayout>
+      
+      
     ),
   },
 
