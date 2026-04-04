@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { UserButton, useUser, SignOutButton } from "@clerk/nextjs";
 import { BrainCircuit, Target, Sun, Moon, Zap, Download, FileText, BookOpen, GraduationCap, Briefcase, Trophy, LayoutDashboard, Compass, History, Clock, Lock, Sparkles, ArrowRight, LogOut, Loader2, X, MessageSquare, Send, Bot } from "lucide-react";
 import Link from "next/link";
+import VoiceMentorCall from "../components/VoiceMentorCall";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -22,23 +23,19 @@ export default function Dashboard() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [selectedJob, setSelectedJob] = useState<{title: string, matchPercentage: number} | null>(null);
   
-  // 🚀 States for Job Details Modal
   const [jobDetails, setJobDetails] = useState<any>(null);
   const [loadingJobDetails, setLoadingJobDetails] = useState(false);
 
-  // Colleges State
   const [searchQuery, setSearchQuery] = useState("");
   const [activeLocation, setActiveLocation] = useState("India"); 
   const [filteredColleges, setFilteredColleges] = useState<any[]>([]);
   const [loadingColleges, setLoadingColleges] = useState(false);
   const [searchLevelMsg, setSearchLevelMsg] = useState("");
 
-  // Roadmap State
   const [roadmap, setRoadmap] = useState<any[]>([]);
   const [loadingRoadmap, setLoadingRoadmap] = useState(false);
   const [roadmapUnlocked, setRoadmapUnlocked] = useState(false);
 
-  // CHATBOT STATE
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatMessage, setChatMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<{role: string, content: string}[]>([]);
@@ -228,16 +225,14 @@ export default function Dashboard() {
       
       <aside className={`w-20 lg:w-64 flex flex-col justify-between border-r transition-colors print:hidden shrink-0 ${isDark ? 'bg-[#111] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
         <div>
-          {/* 🚀 LOGO REPLACEMENT: Sidebar Header */}
+          {/* Sidebar Header */}
           <div className="h-20 flex items-center justify-center lg:justify-start lg:px-6 border-b border-transparent">
-            {/* Mobile/Collapsed Logo */}
             <img 
               src="/image.jpeg" 
               alt="Apni Disha Icon" 
               className="w-10 h-10 lg:hidden mx-auto rounded-lg object-contain" 
             />
             
-            {/* Desktop/Expanded Logo */}
             <div className="hidden lg:flex items-center gap-3">
               <img 
                 src="/image.jpeg" 
@@ -478,7 +473,7 @@ export default function Dashboard() {
             )}
         </div>
         
-        {/* <div className="mt-12 mb-20">
+        <div className="mt-12 mb-20">
             <div className="flex items-center gap-3 mb-6">
                 <div className={`p-2 rounded-lg ${isDark ? 'bg-amber-500/20 text-amber-400' : 'bg-amber-100 text-amber-600'}`}>
                     <Zap className="w-6 h-6" />
@@ -486,9 +481,9 @@ export default function Dashboard() {
                 <h3 className={`text-2xl font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>Your Immediate Next Steps</h3>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6"> */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Task 1: Skill Prep */}
-                {/* <div className={`p-6 rounded-[2rem] border transition-all hover:scale-[1.02] ${isDark ? 'bg-[#111] border-[#2A2A2A]' : 'bg-white border-slate-200 shadow-sm'}`}>
+                <div className={`p-6 rounded-2xl border transition-all hover:scale-[1.02] flex flex-col ${isDark ? 'bg-[#111] border-[#2A2A2A]' : 'bg-white border-slate-200 shadow-sm'}`}>
                     <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center mb-4">
                         <BookOpen className="w-6 h-6" />
                     </div>
@@ -496,27 +491,29 @@ export default function Dashboard() {
                     <p className={`text-xs mb-6 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         We've curated the best free courses from YouTube & Coursera for <b>{topCluster}</b>.
                     </p>
-                    <button className="w-full py-3 rounded-xl bg-indigo-600 text-white text-xs font-black uppercase tracking-wider hover:bg-indigo-700 transition">
-                        Explore Resources
-                    </button>
-                </div> */}
+                    <div className="mt-auto">
+                        <button className="w-full py-3 rounded-xl bg-indigo-600 text-white text-xs font-black uppercase tracking-wider hover:bg-indigo-700 transition">
+                            Explore Resources
+                        </button>
+                    </div>
+                </div>
 
-                {/* Task 2: Mentorship (Unlock CTA) */}
-                {/* <div className={`p-6 rounded-[2rem] border transition-all hover:scale-[1.02] border-dashed ${isDark ? 'bg-indigo-500/5 border-indigo-500/20' : 'bg-indigo-50/30 border-indigo-200'}`}>
+                {/* Task 2: Mentorship (Clean UI) */}
+                <div className={`p-6 rounded-2xl border transition-all hover:scale-[1.02] flex flex-col ${isDark ? 'bg-indigo-500/5 border-indigo-500/20' : 'bg-white border-slate-200 shadow-sm'}`}>
                     <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-4">
                         <MessageSquare className="w-6 h-6" />
                     </div>
                     <h4 className={`font-bold mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>Talk to an Expert</h4>
                     <p className={`text-xs mb-6 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                        Confused about the roadmap? Book a 15-min discovery call with a mentor.
+                        Confused about the roadmap? Talk to 'Disha' directly in real-time.
                     </p>
-                    <button className="w-full py-3 rounded-xl border border-indigo-600 text-indigo-600 text-xs font-black uppercase tracking-wider hover:bg-indigo-600 hover:text-white transition">
-                        Request Call
-                    </button>
-                </div> */}
+                    <div className="mt-auto">
+                        <VoiceMentorCall />
+                    </div>
+                </div>
 
                 {/* Task 3: Weekly Goal */}
-                {/* <div className={`p-6 rounded-[2rem] border transition-all hover:scale-[1.02] ${isDark ? 'bg-[#111] border-[#2A2A2A]' : 'bg-white border-slate-200 shadow-sm'}`}>
+                <div className={`p-6 rounded-2xl border transition-all hover:scale-[1.02] flex flex-col ${isDark ? 'bg-[#111] border-[#2A2A2A]' : 'bg-white border-slate-200 shadow-sm'}`}>
                     <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-4">
                         <Trophy className="w-6 h-6" />
                     </div>
@@ -524,12 +521,14 @@ export default function Dashboard() {
                     <p className={`text-xs mb-6 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         Small steps lead to big results. Complete this week's <b>{topCluster}</b> task.
                     </p>
-                    <button className="w-full py-3 rounded-xl bg-emerald-600 text-white text-xs font-black uppercase tracking-wider hover:bg-emerald-700 transition">
-                        View Challenge
-                    </button>
+                    <div className="mt-auto">
+                        <button className="w-full py-3 rounded-xl bg-emerald-600 text-white text-xs font-black uppercase tracking-wider hover:bg-emerald-700 transition">
+                            View Challenge
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div> */}
+        </div>
 
         <div className={`mt-16 mb-12 p-8 md:p-12 rounded-[3rem] border border-dashed flex flex-col md:flex-row items-center justify-between gap-8 ${isDark ? 'bg-indigo-500/5 border-indigo-500/20' : 'bg-indigo-50 border-indigo-200'}`}>
             <div className="text-center md:text-left">

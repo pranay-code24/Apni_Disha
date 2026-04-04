@@ -21,6 +21,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+client = Groq(
+    api_key=os.environ.get("GROQ_API_KEY"),
+)
 
 DB_URL="postgresql://neondb_owner:npg_lYTXmz0yh1Pc@ep-billowing-firefly-ai3mpvy5-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
@@ -490,32 +493,43 @@ def get_colleges(req: CollegeFilterRequest):
             release_db_connection(conn)
 
 @app.post("/chat")
-def chat_with_ai(req: ChatRequest):
-    try:
-        if not groq_api_key:
-            return {"success": False, "error": "Groq API key missing"}
+async def chat_with_disha(request_data: dict):
+    
+    user_grade = request_data.get("grade", "10th Grade") 
+    user_city = request_data.get("city", "India")
+    target_trait = request_data.get("trait", "Career")
+    user_message = request_data.get("message", "Hello!")
 
-        system_prompt = f"You are a friendly Indian career counselor. You are talking to a 15-year-old student who just got matched with the '{req.cluster}' career cluster. Keep your answers short, encouraging, and highly specific to the Indian education system (exams, colleges, reality). Use simple English. Maximum 3-4 sentences."
+    system_prompt = f"""
+    You are 'Disha', the official AI Career Mentor for the platform ApniDisha.
 
-        messages = [{"role": "system", "content": system_prompt}]
-        
-        for msg in req.history:
-            messages.append({"role": msg['role'], "content": msg['content']})
-            
-        messages.append({"role": "user", "content": req.message})
+    YOUR PERSONA:
+    1. You act as a friendly, supportive elder sibling (around 25 years old) guiding a younger student from India.
+    2. Your tone is warm, encouraging, and Gen-Z relatable (use phrases like "Awesome!", "Don't worry", "Let's figure this out").
+    3. NEVER sound like a strict teacher, a boring robotic counselor, or Wikipedia.
+    4. Always validate the student's feelings before asking the next question.
 
-        chat_completion = groq_client.chat.completions.create(
-            messages=messages,
-            model="llama-3.3-70b-versatile",
-            temperature=0.7,
-            max_tokens=200
-        )
-        
-        reply = chat_completion.choices[0].message.content.strip()
-        return {"success": True, "reply": reply}
-    except Exception as e:
-        print("Chat Error: ", e)
-        return {"success": False, "error": str(e)}
+    CURRENT CONTEXT:
+    The user is a student in {user_grade} from {user_city}. 
+    Respond to the user keeping your persona active.
+    """
+
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {
+                "role": "system",
+                "content": system_prompt
+            },
+            {
+                "role": "user",
+                "content": user_message
+            }
+        ],
+        model="llama-3.1-8b-instant",
+        temperature=0.7,
+    )
+    reply = chat_completion.choices[0].message.content
+    return {"success": True, "reply": reply}
     
 @app.post("/api/job-details")
 def get_job_details(req: JobDetailRequest):
