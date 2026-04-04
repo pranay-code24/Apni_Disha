@@ -61,7 +61,6 @@ export default function CompleteProfile() {
   return (
     <main className="min-h-screen bg-[#000000] flex items-center justify-center p-6 relative overflow-hidden font-sans">
       
-      {/* Background Blobs for consistency */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full blur-[140px] bg-indigo-900/20 transition-colors duration-700"></div>
           <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full blur-[140px] bg-cyan-900/20 transition-colors duration-700"></div>

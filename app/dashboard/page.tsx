@@ -22,19 +22,23 @@ export default function Dashboard() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [selectedJob, setSelectedJob] = useState<{title: string, matchPercentage: number} | null>(null);
   
+  // 🚀 States for Job Details Modal
   const [jobDetails, setJobDetails] = useState<any>(null);
   const [loadingJobDetails, setLoadingJobDetails] = useState(false);
 
+  // Colleges State
   const [searchQuery, setSearchQuery] = useState("");
   const [activeLocation, setActiveLocation] = useState("India"); 
   const [filteredColleges, setFilteredColleges] = useState<any[]>([]);
   const [loadingColleges, setLoadingColleges] = useState(false);
   const [searchLevelMsg, setSearchLevelMsg] = useState("");
 
+  // Roadmap State
   const [roadmap, setRoadmap] = useState<any[]>([]);
   const [loadingRoadmap, setLoadingRoadmap] = useState(false);
   const [roadmapUnlocked, setRoadmapUnlocked] = useState(false);
 
+  // CHATBOT STATE
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatMessage, setChatMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<{role: string, content: string}[]>([]);
@@ -224,13 +228,26 @@ export default function Dashboard() {
       
       <aside className={`w-20 lg:w-64 flex flex-col justify-between border-r transition-colors print:hidden shrink-0 ${isDark ? 'bg-[#111] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
         <div>
-          <div className="h-16 flex items-center justify-center lg:justify-start lg:px-6 border-b border-transparent">
-            <div className={`p-1.5 rounded-lg ${isDark ? 'bg-indigo-500/20 text-indigo-400' : 'bg-indigo-600 text-white'}`}>
-              <BrainCircuit className="w-6 h-6" />
+          {/* 🚀 LOGO REPLACEMENT: Sidebar Header */}
+          <div className="h-20 flex items-center justify-center lg:justify-start lg:px-6 border-b border-transparent">
+            {/* Mobile/Collapsed Logo */}
+            <img 
+              src="/image.jpeg" 
+              alt="Apni Disha Icon" 
+              className="w-10 h-10 lg:hidden mx-auto rounded-lg object-contain" 
+            />
+            
+            {/* Desktop/Expanded Logo */}
+            <div className="hidden lg:flex items-center gap-3">
+              <img 
+                src="/image.jpeg" 
+                alt="Apni Disha Logo" 
+                className="w-12 h-12 rounded-xl object-contain shadow-sm" 
+              />
+              <span className={`text-xl font-black tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                Apni<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-cyan-500">Disha</span>
+              </span>
             </div>
-            <span className={`hidden lg:block ml-3 text-xl font-black tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              Apni<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-cyan-500">Disha</span>
-            </span>
           </div>
 
           <div className="flex flex-col gap-2 p-3 mt-4">
@@ -460,9 +477,84 @@ export default function Dashboard() {
                 </div>
             )}
         </div>
+        
+        {/* <div className="mt-12 mb-20">
+            <div className="flex items-center gap-3 mb-6">
+                <div className={`p-2 rounded-lg ${isDark ? 'bg-amber-500/20 text-amber-400' : 'bg-amber-100 text-amber-600'}`}>
+                    <Zap className="w-6 h-6" />
+                </div>
+                <h3 className={`text-2xl font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>Your Immediate Next Steps</h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6"> */}
+                {/* Task 1: Skill Prep */}
+                {/* <div className={`p-6 rounded-[2rem] border transition-all hover:scale-[1.02] ${isDark ? 'bg-[#111] border-[#2A2A2A]' : 'bg-white border-slate-200 shadow-sm'}`}>
+                    <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center mb-4">
+                        <BookOpen className="w-6 h-6" />
+                    </div>
+                    <h4 className={`font-bold mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>Start Learning</h4>
+                    <p className={`text-xs mb-6 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                        We've curated the best free courses from YouTube & Coursera for <b>{topCluster}</b>.
+                    </p>
+                    <button className="w-full py-3 rounded-xl bg-indigo-600 text-white text-xs font-black uppercase tracking-wider hover:bg-indigo-700 transition">
+                        Explore Resources
+                    </button>
+                </div> */}
+
+                {/* Task 2: Mentorship (Unlock CTA) */}
+                {/* <div className={`p-6 rounded-[2rem] border transition-all hover:scale-[1.02] border-dashed ${isDark ? 'bg-indigo-500/5 border-indigo-500/20' : 'bg-indigo-50/30 border-indigo-200'}`}>
+                    <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-4">
+                        <MessageSquare className="w-6 h-6" />
+                    </div>
+                    <h4 className={`font-bold mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>Talk to an Expert</h4>
+                    <p className={`text-xs mb-6 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                        Confused about the roadmap? Book a 15-min discovery call with a mentor.
+                    </p>
+                    <button className="w-full py-3 rounded-xl border border-indigo-600 text-indigo-600 text-xs font-black uppercase tracking-wider hover:bg-indigo-600 hover:text-white transition">
+                        Request Call
+                    </button>
+                </div> */}
+
+                {/* Task 3: Weekly Goal */}
+                {/* <div className={`p-6 rounded-[2rem] border transition-all hover:scale-[1.02] ${isDark ? 'bg-[#111] border-[#2A2A2A]' : 'bg-white border-slate-200 shadow-sm'}`}>
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-4">
+                        <Trophy className="w-6 h-6" />
+                    </div>
+                    <h4 className={`font-bold mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>Weekly Challenge</h4>
+                    <p className={`text-xs mb-6 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                        Small steps lead to big results. Complete this week's <b>{topCluster}</b> task.
+                    </p>
+                    <button className="w-full py-3 rounded-xl bg-emerald-600 text-white text-xs font-black uppercase tracking-wider hover:bg-emerald-700 transition">
+                        View Challenge
+                    </button>
+                </div>
+            </div>
+        </div> */}
+
+        <div className={`mt-16 mb-12 p-8 md:p-12 rounded-[3rem] border border-dashed flex flex-col md:flex-row items-center justify-between gap-8 ${isDark ? 'bg-indigo-500/5 border-indigo-500/20' : 'bg-indigo-50 border-indigo-200'}`}>
+            <div className="text-center md:text-left">
+                <h3 className={`text-2xl font-black mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    Not satisfied with this path?
+                </h3>
+                <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    No worries! You can retake the AI assessment to explore a different career cluster.
+                </p>
+            </div>
+            
+            <Link 
+                href="/onboarding" 
+                className="group relative flex items-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 px-10 rounded-2xl transition-all hover:scale-105 shadow-[0_20px_50px_rgba(79,70,229,0.3)] shrink-0"
+            >
+                <div className="absolute inset-0 rounded-2xl bg-white/20 animate-ping group-hover:block hidden"></div>
+                <History className="w-5 h-5" />
+                Retake AI Quiz
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+        </div>
 
       </main>
 
+      {/* Right Aside Panel */}
       <aside className={`w-80 hidden 2xl:flex flex-col p-6 border-l overflow-y-auto shrink-0 print:hidden ${isDark ? 'bg-[#111] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
         <div className={`p-6 rounded-[2rem] border flex flex-col items-center mb-6 shadow-sm ${isDark ? 'bg-[#0A0A0A] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
             <h3 className={`font-black text-sm mb-4 ${isDark ? 'text-white' : 'text-slate-900'}`}>Profile Readiness</h3>
@@ -502,6 +594,7 @@ export default function Dashboard() {
         </div>
       </aside>
 
+      {/* FLOATING CHATBOT BUTTON */}
       <button 
         onClick={() => setIsChatOpen(!isChatOpen)}
         className="fixed bottom-6 right-6 p-4 rounded-full shadow-2xl transition-transform hover:scale-110 z-40 print:hidden bg-indigo-600 text-white outline-none"
@@ -509,6 +602,7 @@ export default function Dashboard() {
         <MessageSquare className="w-6 h-6" />
       </button>
 
+      {/* CHAT WINDOW PANEL */}
       {isChatOpen && (
         <div className={`fixed bottom-24 right-6 w-80 sm:w-96 h-[500px] rounded-2xl border shadow-2xl flex flex-col overflow-hidden z-50 transition-all print:hidden ${isDark ? 'bg-[#111] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
           
@@ -563,61 +657,50 @@ export default function Dashboard() {
       {selectedJob && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 print:hidden">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedJob(null)}></div>
-          <div className={`relative w-full max-w-md p-8 rounded-[2rem] border shadow-2xl z-10 transition-all duration-300 ${isDark ? 'bg-[#0A0A0A] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
-            
-            <button onClick={() => setSelectedJob(null)} className={`absolute top-5 right-5 p-2 rounded-full transition-colors ${isDark ? 'hover:bg-[#222] text-slate-400' : 'hover:bg-slate-100 text-slate-500'}`}>
+          <div className={`relative w-full max-w-md p-8 rounded-[2rem] border shadow-2xl z-10 ${isDark ? 'bg-[#0A0A0A] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
+            <button onClick={() => setSelectedJob(null)} className={`absolute top-5 right-5 p-2 rounded-full ${isDark ? 'hover:bg-[#222] text-slate-400' : 'hover:bg-slate-100 text-slate-500'}`}>
               <X className="w-5 h-5" />
             </button>
-
             <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold border mb-4 ${isDark ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-emerald-50 border-emerald-200 text-emerald-600'}`}>
               <Zap className="w-3.5 h-3.5" /> {selectedJob.matchPercentage}% Profile Match
             </div>
-            <h2 className={`text-2xl font-black mb-4 ${isDark ? 'text-white' : 'text-slate-900'}`}>{selectedJob.title}</h2>
+            <h2 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-slate-900'}`}>{selectedJob.title}</h2>
 
             {loadingJobDetails ? (
-                <div className="py-12 flex flex-col items-center justify-center text-indigo-500">
-                    <Loader2 className="w-10 h-10 animate-spin mb-4" />
-                    <p className="animate-pulse text-sm font-bold tracking-tight">AI is analyzing market trends...</p>
-                    <div className="mt-6 w-full space-y-3">
-                        <div className={`h-3 w-full rounded-full animate-pulse ${isDark ? 'bg-white/5' : 'bg-slate-100'}`}></div>
-                        <div className={`h-3 w-4/5 rounded-full animate-pulse ${isDark ? 'bg-white/5' : 'bg-slate-100'}`}></div>
-                    </div>
+                <div className="py-10 flex flex-col items-center justify-center text-indigo-500">
+                    <Loader2 className="w-8 h-8 animate-spin mb-4" />
+                    <p className="animate-pulse text-sm font-medium">Fetching real-time market data...</p>
                 </div>
             ) : jobDetails ? (
-                <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-                    <p className={`text-sm leading-relaxed mb-6 font-medium ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                        {jobDetails.description}
-                    </p>
+                <div className="animate-in fade-in zoom-in duration-300">
+                    <p className={`text-sm leading-relaxed mb-6 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{jobDetails.description}</p>
                     
-                    <div className="space-y-4 mb-8">
-                      <div className={`p-5 rounded-2xl border flex items-center justify-between shadow-sm ${isDark ? 'bg-[#141414] border-[#2A2A2A]' : 'bg-indigo-50/50 border-indigo-100'}`}>
+                    <div className="space-y-3 mb-6">
+                      <div className={`p-4 rounded-2xl border flex items-center justify-between ${isDark ? 'bg-[#141414] border-[#2A2A2A]' : 'bg-slate-50 border-slate-100'}`}>
                         <div>
-                          <h4 className={`text-[10px] font-black uppercase tracking-[0.15em] mb-1 ${isDark ? 'text-slate-500' : 'text-indigo-400'}`}>Est. Indian Salary</h4>
-                          <p className={`text-lg font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>{jobDetails.salary}</p>
+                          <h4 className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Expected Salary Range</h4>
+                          <p className={`font-bold ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>{jobDetails.salary}</p>
                         </div>
-                        <div className={`p-3 rounded-xl shadow-inner ${isDark ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white text-emerald-600'}`}>
-                          <span className="text-xl">💰</span>
-                        </div>
+                        <div className={`p-2 rounded-lg ${isDark ? 'bg-green-500/10 text-green-400' : 'bg-green-100 text-green-600'}`}>💰</div>
                       </div>
                     </div>
 
                     <div>
-                        <h4 className={`text-[10px] font-black uppercase tracking-[0.15em] mb-4 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Core Skills Needed</h4>
+                        <h4 className={`text-[10px] font-bold uppercase tracking-widest mb-3 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Key Skills Required</h4>
                         <div className="flex flex-wrap gap-2">
                             {jobDetails.skills.map((skill: string, i: number) => (
-                                <span key={i} className={`text-[11px] font-bold px-4 py-2 rounded-xl border transition-all ${isDark ? 'bg-[#1A1A1A] border-white/5 text-indigo-300 hover:border-indigo-500/50' : 'bg-white border-slate-200 text-indigo-700 shadow-sm hover:border-indigo-300'}`}>
+                                <span key={i} className={`text-xs font-bold px-3 py-1.5 rounded-lg border ${isDark ? 'bg-[#222] border-[#333] text-indigo-400' : 'bg-indigo-50 border-indigo-100 text-indigo-600'}`}>
                                     {skill}
                                 </span>
                             ))}
                         </div>
                     </div>
                 </div>
-            ) : (
-                <p className="text-center text-rose-500 font-bold py-10">Failed to load real-time data. Please try again.</p>
-            )}
+            ) : null}
           </div>
         </div>
       )}
+
     </div>
   );
 }

@@ -74,14 +74,14 @@ export default function Home() {
                 
                 <div className={`mb-8 inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold border backdrop-blur-sm shadow-sm ${isDark ? 'bg-white/5 border-white/10 text-indigo-300' : 'bg-white border-slate-200 text-indigo-600'}`}>
                     <Sparkles className="w-4 h-4 text-amber-400" />
-                    Built for the Indian Education System
+                    "Let's Build Future, Not Pressure"
                 </div>
 
                 <h1 className={`text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-tight max-w-5xl mb-6 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    Discover Your True <br className="hidden md:block" />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-cyan-400 to-emerald-400">
-                        Career Path
-                    </span> with AI
+                    Discover Your Intrest<br className="hidden md:block" />
+                    With <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-cyan-400 to-emerald-400">
+                        ApniDisha
+                    </span>
                 </h1>
 
                 <p className={`text-lg md:text-xl max-w-2xl mb-12 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
@@ -93,7 +93,7 @@ export default function Home() {
                         <Link href="/onboarding" className="group relative w-full sm:w-auto">
                             <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-2xl blur opacity-30 group-hover:opacity-70 transition duration-500"></div>
                             <button className={`relative w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${isDark ? 'bg-white text-black hover:bg-slate-200' : 'bg-indigo-600 text-white hover:bg-indigo-700'}`}>
-                                Start Your AI Test <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                Start Test <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                             </button>
                         </Link>
                     ) : (
@@ -140,7 +140,7 @@ export default function Home() {
 
             {/* Simple Footer */}
             <footer className={`relative z-10 border-t py-8 text-center text-sm ${isDark ? 'border-[#2A2A2A] text-slate-500' : 'border-slate-200 text-slate-500'}`}>
-                <p>© 2026 ApniDisha. Built with Love by Pranay</p>
+                <p>© 2026 ApniDisha. Built with ❤️ by Pranay</p>
             </footer>
         </div>
     );
