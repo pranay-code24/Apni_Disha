@@ -64,6 +64,7 @@ class AdaptiveQuizRequest(BaseModel):
     last_rating: int = 0  
     current_cluster: str = "" 
     cluster_prefs: dict = {}
+    previous_questions: list = []
 
 class CollegeFilterRequest(BaseModel):
     city: str
@@ -81,6 +82,15 @@ class UserProfile(BaseModel):
 
 class RoadmapRequest(BaseModel):
     cluster: str
+
+class ChatRequest(BaseModel):
+    message: str
+    cluster: str
+    history: list = []
+
+class JobDetailRequest(BaseModel):
+    title: str
+    cluster: str 
 
 CLUSTER_IMAGES = {
     "Realistic": ["photo-1581092918056-0c4c3acd3789", "photo-1498084393753-b411b2d26b34"], 
@@ -250,21 +260,21 @@ def predict_career_adaptive(req: AdaptiveQuizRequest):
                                 "matchPercentage": round(row['match_score'], 1)
                             })
                             
-                        if len(top_careers) == 3:
+                        if len(top_careers) == 5:
                             break
 
             if not top_careers:
                 fallback_jobs = {
-                    "Software & Tech": [{"title": "Full Stack Developer", "matchPercentage": 96.5}, {"title": "Cloud Architect", "matchPercentage": 94.2}, {"title": "Data Scientist", "matchPercentage": 91.8}],
-                    "Medical & Healthcare": [{"title": "Clinical Researcher", "matchPercentage": 95.0}, {"title": "Specialist Physician", "matchPercentage": 92.4}, {"title": "Healthcare Admin", "matchPercentage": 89.9}],
-                    "Business & Finance": [{"title": "Investment Banker", "matchPercentage": 97.1}, {"title": "Management Consultant", "matchPercentage": 93.5}, {"title": "Financial Analyst", "matchPercentage": 90.2}],
-                    "Engineering & Core": [{"title": "Mechanical Engineer", "matchPercentage": 96.0}, {"title": "Robotics Engineer", "matchPercentage": 94.1}, {"title": "Civil Architect", "matchPercentage": 88.5}],
-                    "Arts & Design": [{"title": "UX/UI Designer", "matchPercentage": 98.2}, {"title": "Creative Director", "matchPercentage": 95.4}, {"title": "Motion Graphics", "matchPercentage": 91.0}],
-                    "Education & Social": [{"title": "Curriculum Developer", "matchPercentage": 95.5}, {"title": "Clinical Psychologist", "matchPercentage": 93.8}, {"title": "Professor", "matchPercentage": 90.1}],
-                    "Agriculture & Nature": [{"title": "Agri-Tech Specialist", "matchPercentage": 94.5}, {"title": "Environmental Scientist", "matchPercentage": 92.0}, {"title": "Botanist", "matchPercentage": 89.5}],
-                    "Sports & Fitness": [{"title": "Sports Physiotherapist", "matchPercentage": 96.8}, {"title": "Athletic Director", "matchPercentage": 93.2}, {"title": "Strength Coach", "matchPercentage": 90.5}],
-                    "Defense & Military": [{"title": "Army Officer", "matchPercentage": 96.5}, {"title": "Naval Commander", "matchPercentage": 94.2}, {"title": "Air Force Pilot", "matchPercentage": 91.8}],
-                    "Skilled Trades & Construction": [{"title": "Master Electrician", "matchPercentage": 95.0}, {"title": "Marine Engineer", "matchPercentage": 92.4}, {"title": "Civil Architect", "matchPercentage": 89.9}]
+                    "Software & Tech": [{"title": "Full Stack Developer", "matchPercentage": 96.5}, {"title": "Cloud Architect", "matchPercentage": 94.2}, {"title": "Data Scientist", "matchPercentage": 91.8}, {"title": "Cybersecurity Analyst", "matchPercentage": 89.5}, {"title": "DevOps Engineer", "matchPercentage": 88.0}],
+                    "Medical & Healthcare": [{"title": "Clinical Researcher", "matchPercentage": 95.0}, {"title": "Specialist Physician", "matchPercentage": 92.4}, {"title": "Healthcare Admin", "matchPercentage": 89.9}, {"title": "Physiotherapist", "matchPercentage": 87.5}, {"title": "Nutritionist", "matchPercentage": 86.2}],
+                    "Business & Finance": [{"title": "Investment Banker", "matchPercentage": 97.1}, {"title": "Management Consultant", "matchPercentage": 93.5}, {"title": "Financial Analyst", "matchPercentage": 90.2}, {"title": "Marketing Manager", "matchPercentage": 88.7}, {"title": "HR Director", "matchPercentage": 86.9}],
+                    "Engineering & Core": [{"title": "Mechanical Engineer", "matchPercentage": 96.0}, {"title": "Robotics Engineer", "matchPercentage": 94.1}, {"title": "Civil Architect", "matchPercentage": 88.5}, {"title": "Aerospace Engineer", "matchPercentage": 87.2}, {"title": "Chemical Engineer", "matchPercentage": 85.0}],
+                    "Arts & Design": [{"title": "UX/UI Designer", "matchPercentage": 98.2}, {"title": "Creative Director", "matchPercentage": 95.4}, {"title": "Motion Graphics", "matchPercentage": 91.0}, {"title": "Interior Designer", "matchPercentage": 89.5}, {"title": "Art Director", "matchPercentage": 87.0}],
+                    "Education & Social": [{"title": "Curriculum Developer", "matchPercentage": 95.5}, {"title": "Clinical Psychologist", "matchPercentage": 93.8}, {"title": "Professor", "matchPercentage": 90.1}, {"title": "Social Worker", "matchPercentage": 88.5}, {"title": "Career Counselor", "matchPercentage": 86.2}],
+                    "Agriculture & Nature": [{"title": "Agri-Tech Specialist", "matchPercentage": 94.5}, {"title": "Environmental Scientist", "matchPercentage": 92.0}, {"title": "Botanist", "matchPercentage": 89.5}, {"title": "Wildlife Biologist", "matchPercentage": 87.5}, {"title": "Geologist", "matchPercentage": 85.0}],
+                    "Sports & Fitness": [{"title": "Sports Physiotherapist", "matchPercentage": 96.8}, {"title": "Athletic Director", "matchPercentage": 93.2}, {"title": "Strength Coach", "matchPercentage": 90.5}, {"title": "Sports Data Analyst", "matchPercentage": 88.2}, {"title": "Dietitian", "matchPercentage": 86.5}],
+                    "Defense & Military": [{"title": "Army Officer", "matchPercentage": 96.5}, {"title": "Naval Commander", "matchPercentage": 94.2}, {"title": "Air Force Pilot", "matchPercentage": 91.8}, {"title": "Intelligence Analyst", "matchPercentage": 89.0}, {"title": "Cyber Defense Officer", "matchPercentage": 87.5}],
+                    "Skilled Trades & Construction": [{"title": "Master Electrician", "matchPercentage": 95.0}, {"title": "Marine Engineer", "matchPercentage": 92.4}, {"title": "Civil Architect", "matchPercentage": 89.9}, {"title": "Construction Manager", "matchPercentage": 88.0}, {"title": "Surveyor", "matchPercentage": 86.5}]
                 }
                 top_careers = fallback_jobs.get(predicted_cluster, [{"title": "Top Professional", "matchPercentage": 95.0}])
 
@@ -298,42 +308,28 @@ def predict_career_adaptive(req: AdaptiveQuizRequest):
                 trait_1, trait_2 = top_traits[0][0], top_traits[1][0]
                 
                 if groq_api_key:
-                    question_angles = [
-                        "Focus on a regular daily task or routine.",
-                        "Focus on the physical or mental environment they will work in.",
-                        "Focus on handling a sudden emergency, crisis, or high-pressure situation.",
-                        "Focus on interacting with difficult clients, patients, or annoying teammates.",
-                        "Focus on the patience required for a very long, months-long project.",
-                        "Focus on learning complex new tools, software, or heavy machinery.",
-                        "Focus on taking strict leadership and making a tough group decision.",
-                        "Focus on following very strict safety rules, laws, or protocols.",
-                        "Focus on using out-of-the-box creativity to solve an unexpected problem.",
-                        "Focus on analyzing messy numbers, data, or finding hidden patterns.",
-                        "Focus on the extreme physical stamina or outdoor fieldwork required.",
-                        "Focus on standing on a stage and presenting ideas to convince a large group.",
-                        "Focus on doing a highly detailed, repetitive, but important task.",
-                        "Focus on debugging or fixing a system/machine that is completely broken."
-                    ]
-                    
-                    angle_index = (step - 7) % len(question_angles) 
-                    current_angle = question_angles[angle_index]
+                    past_qs = "\n".join([f"- {q}" for q in req.previous_questions[-6:]]) if req.previous_questions else "None"
 
-                    prompt = f"""You are an expert career counselor testing a 15-year-old's interest in the '{predicted_cluster}' field.
+                    prompt = f"""You are an expert psychometric career counselor AI for the Indian Education System.
+                    Your task is to ask a highly engaging, single question to test the user's aptitude for the '{predicted_cluster}' career path.
                     You are evaluating their '{trait_1}' and '{trait_2}' personality traits.
-                    
-                    TASK: Generate exactly ONE short, highly relatable SCENARIO (maximum 20 words).
-                    
+
+                    PAST QUESTIONS ALREADY ASKED (CRITICAL - DO NOT REPEAT THESE OR USE SIMILAR PHRASING):
+                    {past_qs}
+
                     CRITICAL RULES:
-                    - NEVER mention specific job titles (e.g., do NOT say doctor, engineer, artist).
-                    - NO REPETITION: Focus STRICTLY on this specific angle -> {current_angle}
-                    - Use simple 8th-grade English.
-                    - Start the sentence directly. No quotes, no intro text."""
+                    1. Ask about highly specific daily tasks, tools, or workflows.
+                    2. MUST BE COMPLETELY DIFFERENT from the 'PAST QUESTIONS' in both topic and grammar.
+                    3. DO NOT ask situational emergency questions.
+                    4. Keep it under 20 words.
+                    5. DO NOT include options (like A, B, C, D) or scales (like Strongly Agree) in your text. Just output the question statement.
+                    6. Start directly. No quotes, no intro."""
 
                     try:
                         chat_completion = groq_client.chat.completions.create(
                             messages=[{"role": "user", "content": prompt}],
                             model="llama-3.3-70b-versatile", 
-                            temperature=0.8, 
+                            temperature=0.85,
                             max_tokens=40
                         )
                         expert_question = chat_completion.choices[0].message.content.strip()
@@ -343,8 +339,6 @@ def predict_career_adaptive(req: AdaptiveQuizRequest):
                     except Exception as api_err:
                         print(f"Groq API Error: {api_err}. Using fallback.")
                         expert_question = f"I would enjoy using my {trait_1} skills daily as a {career_name}."
-                else:
-                    expert_question = f"I would enjoy using my {trait_1} skills daily as a {career_name}."
 
         return {
             "success": True,
@@ -456,19 +450,28 @@ def get_colleges(req: CollegeFilterRequest):
         
         match_colleges = []
         state_fallback = []
+        seen_names = set()
 
         for r in rows:
             name, loc, st, courses, clusters = r
-            college_obj = {"name": name, "location": f"{loc}, {st}", "courses": courses}
-            if search_cluster in clusters or req.cluster in clusters:
-                match_colleges.append(college_obj)
+            
+            if req.city.lower() in loc.lower() and req.city.lower() == "indore":
+                st = "Madhya Pradesh"
+                
+            if name not in seen_names:
+                college_obj = {"name": name, "location": f"{loc}, {st}", "courses": courses}
+                if search_cluster in clusters or req.cluster in clusters:
+                    match_colleges.append(college_obj)
+                    seen_names.add(name)
 
         if not match_colleges:
             cursor.execute("SELECT name, location, state, courses, clusters FROM colleges WHERE state ILIKE %s", (f"%{req.state}%",))
             state_rows = cursor.fetchall()
             for r in state_rows:
-                if search_cluster in r[4] or req.cluster in r[4]:
-                    state_fallback.append({"name": r[0], "location": f"{r[1]}, {r[2]}", "courses": r[3]})
+                name = r[0]
+                if name not in seen_names and (search_cluster in r[4] or req.cluster in r[4]):
+                    state_fallback.append({"name": name, "location": f"{r[1]}, {r[2]}", "courses": r[3]})
+                    seen_names.add(name)
 
         cursor.close()
         
@@ -485,3 +488,70 @@ def get_colleges(req: CollegeFilterRequest):
     finally:
         if conn:
             release_db_connection(conn)
+
+@app.post("/chat")
+def chat_with_ai(req: ChatRequest):
+    try:
+        if not groq_api_key:
+            return {"success": False, "error": "Groq API key missing"}
+
+        system_prompt = f"You are a friendly Indian career counselor. You are talking to a 15-year-old student who just got matched with the '{req.cluster}' career cluster. Keep your answers short, encouraging, and highly specific to the Indian education system (exams, colleges, reality). Use simple English. Maximum 3-4 sentences."
+
+        messages = [{"role": "system", "content": system_prompt}]
+        
+        for msg in req.history:
+            messages.append({"role": msg['role'], "content": msg['content']})
+            
+        messages.append({"role": "user", "content": req.message})
+
+        chat_completion = groq_client.chat.completions.create(
+            messages=messages,
+            model="llama-3.3-70b-versatile",
+            temperature=0.7,
+            max_tokens=200
+        )
+        
+        reply = chat_completion.choices[0].message.content.strip()
+        return {"success": True, "reply": reply}
+    except Exception as e:
+        print("Chat Error: ", e)
+        return {"success": False, "error": str(e)}
+    
+@app.post("/api/job-details")
+def get_job_details(req: JobDetailRequest):
+    try:
+        if not groq_api_key:
+            return {"success": False, "error": "Groq API key missing"}
+
+        prompt = f"""You are a career expert for the Indian job market. Provide accurate details for the role of '{req.title}' in the '{req.cluster}' sector.
+        Respond ONLY with a valid JSON object in this exact format. No markdown, no extra text.
+        {{
+            "description": "2-3 sentences explaining exactly what this role does on a daily basis.",
+            "salary": "₹X.X Lakhs - ₹Y.Y Lakhs / Year",
+            "skills": ["Skill 1", "Skill 2", "Skill 3"]
+        }}"""
+
+        chat_completion = groq_client.chat.completions.create(
+            messages=[{"role": "user", "content": prompt}],
+            model="llama-3.3-70b-versatile",
+            temperature=0.3,
+            max_tokens=250
+        )
+
+        raw_response = chat_completion.choices[0].message.content.strip()
+        json_match = re.search(r'\{.*?\}', raw_response, re.DOTALL)
+
+        if json_match:
+            job_data = json.loads(json_match.group(0))
+        else:
+            job_data = json.loads(raw_response)
+
+        return {"success": True, "details": job_data}
+        
+    except Exception as e:
+        print("Job Details Error:", e)
+        return {"success": True, "details": {
+            "description": f"An exciting and demanding professional role in the {req.cluster} industry.",
+            "salary": "₹4.5L - ₹9.0L / Year",
+            "skills": ["Communication", "Problem Solving", "Domain Expertise"]
+        }}
