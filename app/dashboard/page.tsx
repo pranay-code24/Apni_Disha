@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { UserButton, useUser, SignOutButton } from "@clerk/nextjs";
-import { BrainCircuit, Target, Sun, Moon, Zap, Download, FileText, BookOpen, GraduationCap, Briefcase, Trophy, LayoutDashboard, Compass, History, Clock, Lock, Sparkles, ArrowRight, LogOut, Loader2, X, MessageSquare, Send, Bot, PlayCircle, Award, ExternalLink, Flame, CheckCircle2 } from "lucide-react";
+import { BrainCircuit, Target, Sun, Moon, Zap, Download, FileText, BookOpen, GraduationCap, Briefcase, Trophy, LayoutDashboard, Compass, History, Clock, Lock, Sparkles, ArrowRight, LogOut, Loader2, X, MessageSquare, Send, Bot, PlayCircle, Award, ExternalLink, Flame, CheckCircle2, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import VoiceMentorCall from "../components/VoiceMentorCall";
 import confetti from "canvas-confetti";
@@ -114,7 +114,7 @@ export default function Dashboard() {
         setFilteredColleges(data.colleges);
         setActiveLocation(cityQuery ? cityQuery.toUpperCase() : "INDORE");
         if (data.search_level === "State") setSearchLevelMsg(`No exact matches in ${cityQuery}. Showing best options across Madhya Pradesh.`);
-        else if (data.search_level === "National") setSearchLevelMsg(`Showing top national institutes for this specialization.`);
+        else if (data.searchLevel === "National") setSearchLevelMsg(`Showing top national institutes for this specialization.`);
       }
     } catch (error) {
       console.error("Failed to fetch colleges", error);
@@ -165,7 +165,8 @@ export default function Dashboard() {
     setLoadingJobDetails(false);
   };
 
-  const fetchRealtimeResources = async () => {
+  // UPDATED WITH RETRY LOGIC
+  const fetchRealtimeResources = async (retryCount = 0) => {
     setShowResources(true);
     if (aiResources.length > 0) return; 
 
@@ -177,14 +178,25 @@ export default function Dashboard() {
         body: JSON.stringify({ cluster: topCluster })
       });
       const data = await response.json();
-      if (data.success) setAiResources(data.resources);
+      
+      if (data && data.success && data.resources) {
+        setAiResources(data.resources);
+      } else {
+        throw new Error("Invalid resource format");
+      }
     } catch (error) {
-      console.error("Failed to load resources", error);
+      console.error("Attempt", retryCount, "failed:", error);
+      if (retryCount < 2) {
+        console.log("Retrying resources silently...");
+        setTimeout(() => fetchRealtimeResources(retryCount + 1), 1500);
+        return;
+      }
     }
     setLoadingResources(false);
   };
 
-  const fetchRealtimeChallenge = async () => {
+  // UPDATED WITH RETRY LOGIC AND STRICT PARSING
+  const fetchRealtimeChallenge = async (retryCount = 0) => {
     setShowChallenge(true);
     if (aiChallenge) return; 
 
@@ -195,10 +207,22 @@ export default function Dashboard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cluster: topCluster })
       });
+      
       const data = await response.json();
-      if (data.success) setAiChallenge(data.challenge);
+      
+      if (data && data.success && data.challenge) {
+        setAiChallenge(data.challenge);
+      } else {
+        throw new Error("Invalid format from AI");
+      }
+      
     } catch (error) {
-      console.error("Failed to load challenge", error);
+      console.error("Attempt", retryCount, "failed:", error);
+      if (retryCount < 2) {
+        console.log("Retrying silently...");
+        setTimeout(() => fetchRealtimeChallenge(retryCount + 1), 1500);
+        return; 
+      }
     }
     setLoadingChallenge(false);
   };
@@ -563,7 +587,7 @@ export default function Dashboard() {
                     </p>
                     <div className="mt-auto">
                         <button 
-                        onClick={fetchRealtimeResources} 
+                        onClick={() => fetchRealtimeResources(0)} 
                         className="w-full h-12 rounded-xl bg-indigo-600 text-white text-xs font-black uppercase tracking-wider hover:bg-indigo-700 transition flex items-center justify-center gap-2"
                     >
                         Explore Resources
@@ -602,7 +626,7 @@ export default function Dashboard() {
                             </button>
                         ) : (
                             <button 
-                                onClick={fetchRealtimeChallenge} 
+                                onClick={() => fetchRealtimeChallenge(0)} 
                                 className="w-full h-12 rounded-xl bg-emerald-600 text-white text-xs font-black uppercase tracking-wider hover:bg-emerald-700 transition flex items-center justify-center gap-2"
                             >
                                 View Challenge
@@ -675,16 +699,10 @@ export default function Dashboard() {
         </div>
       </aside>
 
-      <button 
-        onClick={() => setIsChatOpen(!isChatOpen)}
-        className="fixed bottom-6 right-6 p-4 rounded-full shadow-2xl transition-transform hover:scale-110 z-40 print:hidden bg-indigo-600 text-white outline-none"
-      >
-        <MessageSquare className="w-6 h-6" />
-      </button>
+      {/* --- ALL MODALS BELOW --- */}
 
       {isChatOpen && (
         <div className={`fixed bottom-24 right-6 w-80 sm:w-96 h-[500px] rounded-2xl border shadow-2xl flex flex-col overflow-hidden z-50 transition-all print:hidden ${isDark ? 'bg-[#111] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
-          
           <div className={`p-4 border-b flex justify-between items-center ${isDark ? 'bg-[#1A1A1A] border-[#2A2A2A]' : 'bg-indigo-600 text-white border-transparent'}`}>
             <div className="flex items-center gap-2">
                <Bot className="w-5 h-5" />
@@ -735,8 +753,8 @@ export default function Dashboard() {
 
       {selectedJob && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 print:hidden">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedJob(null)}></div>
-          <div className={`relative w-full max-w-md p-8 rounded-[2rem] border shadow-2xl z-10 ${isDark ? 'bg-[#0A0A0A] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
+          <div className="absolute inset-0 bg-black/70" onClick={() => setSelectedJob(null)}></div>
+          <div className={`relative w-full max-w-md min-h-[300px] p-8 rounded-[2rem] border shadow-2xl z-10 ${isDark ? 'bg-[#0A0A0A] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
             <button onClick={() => setSelectedJob(null)} className={`absolute top-5 right-5 p-2 rounded-full ${isDark ? 'hover:bg-[#222] text-slate-400' : 'hover:bg-slate-100 text-slate-500'}`}>
               <X className="w-5 h-5" />
             </button>
@@ -775,15 +793,21 @@ export default function Dashboard() {
                         </div>
                     </div>
                 </div>
-            ) : null}
+            ) : (
+                <div className="py-10 flex flex-col items-center justify-center text-center">
+                    <AlertCircle className="w-10 h-10 text-rose-400 mb-3 opacity-80" />
+                    <p className={`text-sm font-bold mb-4 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Couldn't load job details.</p>
+                    <button onClick={() => openJobModal(selectedJob)} className="px-4 py-2 bg-indigo-100 text-indigo-600 rounded-lg text-sm font-bold hover:bg-indigo-200">Try Again</button>
+                </div>
+            )}
           </div>
         </div>
       )}
 
       {showResources && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 print:hidden">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowResources(false)}></div>
-          <div className={`relative w-full max-w-lg p-8 rounded-[2rem] border shadow-2xl z-10 animate-in zoom-in duration-300 ${isDark ? 'bg-[#0A0A0A] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
+          <div className="absolute inset-0 bg-black/70" onClick={() => setShowResources(false)}></div>
+          <div className={`relative w-full max-w-lg min-h-[400px] p-8 rounded-[2rem] border shadow-2xl z-10 animate-in zoom-in duration-300 ${isDark ? 'bg-[#0A0A0A] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
             <button onClick={() => setShowResources(false)} className={`absolute top-5 right-5 p-2 rounded-full transition-colors ${isDark ? 'hover:bg-[#222] text-slate-400' : 'hover:bg-slate-100 text-slate-500'}`}>
               <X className="w-5 h-5" />
             </button>
@@ -800,7 +824,7 @@ export default function Dashboard() {
                     <Loader2 className="w-10 h-10 animate-spin" />
                     <p className="animate-pulse text-sm font-bold">AI is hunting for the best resources...</p>
                 </div>
-            ) : (
+            ) : aiResources && aiResources.length > 0 ? (
                 <div className="space-y-4">
                   {aiResources.map((res, idx) => (
                     <a 
@@ -824,6 +848,12 @@ export default function Dashboard() {
                     </a>
                   ))}
                 </div>
+            ) : (
+                <div className="py-10 flex flex-col items-center justify-center text-center">
+                    <AlertCircle className="w-10 h-10 text-rose-400 mb-3 opacity-80" />
+                    <p className={`text-sm font-bold mb-4 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Couldn't fetch resources right now.</p>
+                    <button onClick={() => fetchRealtimeResources(0)} className="px-4 py-2 bg-indigo-100 text-indigo-600 rounded-lg text-sm font-bold hover:bg-indigo-200">Try Again</button>
+                </div>
             )}
           </div>
         </div>
@@ -831,8 +861,8 @@ export default function Dashboard() {
 
       {showChallenge && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 print:hidden">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowChallenge(false)}></div>
-          <div className={`relative w-full max-w-lg max-h-[90vh] overflow-y-auto p-8 rounded-[2rem] border shadow-2xl z-10 animate-in zoom-in duration-300 ${isDark ? 'bg-[#0A0A0A] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
+          <div className="absolute inset-0 bg-black/70" onClick={() => setShowChallenge(false)}></div>
+          <div className={`relative w-full max-w-lg min-h-[350px] max-h-[90vh] overflow-y-auto p-8 rounded-[2rem] border shadow-2xl z-10 animate-in zoom-in duration-300 ${isDark ? 'bg-[#0A0A0A] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
             <button onClick={() => setShowChallenge(false)} className={`absolute top-5 right-5 p-2 rounded-full transition-colors ${isDark ? 'hover:bg-[#222] text-slate-400' : 'hover:bg-slate-100 text-slate-500'}`}>
               <X className="w-5 h-5" />
             </button>
@@ -875,10 +905,23 @@ export default function Dashboard() {
                     {challengeAccepted ? "Quest Accepted! 🎉" : "Accept Challenge"}
                   </button>
                 </>
-            ) : null}
+            ) : (
+                <div className="py-10 flex flex-col items-center justify-center text-center">
+                    <AlertCircle className="w-10 h-10 text-rose-400 mb-3 opacity-80" />
+                    <p className={`text-sm font-bold mb-4 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Failed to generate your quest.</p>
+                    <button onClick={() => fetchRealtimeChallenge(0)} className="px-4 py-2 bg-emerald-100 text-emerald-700 rounded-lg text-sm font-bold hover:bg-emerald-200">Retry Now</button>
+                </div>
+            )}
           </div>
         </div>
       )}
+
+      <button 
+        onClick={() => setIsChatOpen(!isChatOpen)}
+        className="fixed bottom-6 right-6 p-4 rounded-full shadow-2xl transition-transform hover:scale-110 z-40 print:hidden bg-indigo-600 text-white outline-none"
+      >
+        <MessageSquare className="w-6 h-6" />
+      </button>
     </div>
   );
 }
