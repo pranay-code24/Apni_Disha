@@ -569,3 +569,82 @@ def get_job_details(req: JobDetailRequest):
             "salary": "₹4.5L - ₹9.0L / Year",
             "skills": ["Communication", "Problem Solving", "Domain Expertise"]
         }}
+
+@app.post("/api/resources")
+async def get_realtime_resources(request_data: dict):
+    cluster = request_data.get("cluster", "Engineering")
+    
+    prompt = f"""
+    You are an expert Career Counselor. The student wants to build a career in '{cluster}'.
+    Suggest exactly 3 highly specific, top-rated learning resources to start learning right now.
+    
+    Rules:
+    1. Output strictly in JSON array format. No introductory text, no markdown.
+    2. Format: [{{"title": "Course Name", "platform": "YouTube/Coursera/Udemy", "desc": "1 line description", "link": "https://url..."}}]
+    3. Make sure the links are realistic (use search query links if exact URL is unknown, e.g., https://www.youtube.com/results?search_query=Course+Name)
+    """
+    
+    try:
+        chat_completion = client.chat.completions.create(
+            messages=[{"role": "user", "content": prompt}],
+            model="llama-3.1-8b-instant",
+            temperature=0.3,
+        )
+        
+        reply = chat_completion.choices[0].message.content.strip()
+        
+        if reply.startswith("```"):
+            reply = reply.split("\n", 1)[1].rsplit("\n", 1)[0]
+            
+        resources = json.loads(reply)
+        return {"success": True, "resources": resources}
+    except Exception as e:
+        print(f"Error fetching resources: {e}")
+        return {"success": True, "resources": [
+            {"title": f"Top {cluster} Masterclass", "platform": "YouTube", "desc": "Start learning the basics today.", "link": f"[https://www.youtube.com/results?search_query=](https://www.youtube.com/results?search_query=){cluster.replace(' ', '+')}+full+course"}
+        ]}
+    
+@app.post("/api/challenge")
+async def get_weekly_challenge(request_data: dict):
+    cluster = request_data.get("cluster", "Engineering")
+    
+    prompt = f"""
+    You are an expert Career Coach. The student is pursuing '{cluster}'.
+    Generate a practical, fun 7-day micro-challenge/project for a beginner to build a basic skill in this field.
+    
+    Output STRICTLY in JSON format with no other text:
+    {{
+      "challenge_title": "A catchy project name",
+      "goal": "What they will achieve",
+      "tasks": [
+        {{"day": "Day 1-2", "title": "Research & Plan", "desc": "1 line description"}},
+        {{"day": "Day 3-5", "title": "Execution", "desc": "1 line description"}},
+        {{"day": "Day 6-7", "title": "Review & Publish", "desc": "1 line description"}}
+      ]
+    }}
+    """
+    
+    try:
+        chat_completion = client.chat.completions.create(
+            messages=[{"role": "user", "content": prompt}],
+            model="llama-3.1-8b-instant",
+            temperature=0.4,
+        )
+        
+        reply = chat_completion.choices[0].message.content.strip()
+        if reply.startswith("```"):
+            reply = reply.split("\n", 1)[1].rsplit("\n", 1)[0]
+            
+        challenge_data = json.loads(reply)
+        return {"success": True, "challenge": challenge_data}
+    except Exception as e:
+        print(f"Error fetching challenge: {e}")
+        # Fallback safeguard
+        return {"success": True, "challenge": {
+            "challenge_title": f"{cluster} Explorer Quest",
+            "goal": "Learn the fundamentals in one week.",
+            "tasks": [
+                {"day": "Day 1-3", "title": "Basic Concepts", "desc": "Read introductory articles."},
+                {"day": "Day 4-7", "title": "Mini Project", "desc": "Apply what you learned."}
+            ]
+        }}

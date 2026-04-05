@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { UserButton, useUser, SignOutButton } from "@clerk/nextjs";
-import { BrainCircuit, Target, Sun, Moon, Zap, Download, FileText, BookOpen, GraduationCap, Briefcase, Trophy, LayoutDashboard, Compass, History, Clock, Lock, Sparkles, ArrowRight, LogOut, Loader2, X, MessageSquare, Send, Bot } from "lucide-react";
+import { BrainCircuit, Target, Sun, Moon, Zap, Download, FileText, BookOpen, GraduationCap, Briefcase, Trophy, LayoutDashboard, Compass, History, Clock, Lock, Sparkles, ArrowRight, LogOut, Loader2, X, MessageSquare, Send, Bot, PlayCircle, Award, ExternalLink, Flame, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import VoiceMentorCall from "../components/VoiceMentorCall";
+import confetti from "canvas-confetti";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -35,6 +36,15 @@ export default function Dashboard() {
   const [roadmap, setRoadmap] = useState<any[]>([]);
   const [loadingRoadmap, setLoadingRoadmap] = useState(false);
   const [roadmapUnlocked, setRoadmapUnlocked] = useState(false);
+  
+  const [showResources, setShowResources] = useState(false);
+  const [aiResources, setAiResources] = useState<any[]>([]);
+  const [loadingResources, setLoadingResources] = useState(false);
+
+  const [showChallenge, setShowChallenge] = useState(false);
+  const [aiChallenge, setAiChallenge] = useState<any>(null);
+  const [loadingChallenge, setLoadingChallenge] = useState(false);
+  const [challengeAccepted, setChallengeAccepted] = useState(false);
 
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatMessage, setChatMessage] = useState("");
@@ -76,6 +86,10 @@ export default function Dashboard() {
     }
 
     fetchColleges("", savedResult);
+
+    const accepted = localStorage.getItem(`apnidisha_challenge_accepted_${userId}`);
+    if (accepted === "true") setChallengeAccepted(true);
+
   }, [router, isLoaded, user]);
 
   const handleDownloadPDF = () => {
@@ -149,6 +163,64 @@ export default function Dashboard() {
       console.error("Failed to fetch job details", error);
     }
     setLoadingJobDetails(false);
+  };
+
+  const fetchRealtimeResources = async () => {
+    setShowResources(true);
+    if (aiResources.length > 0) return; 
+
+    setLoadingResources(true);
+    try {
+      const response = await fetch("http://localhost:8000/api/resources", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cluster: topCluster })
+      });
+      const data = await response.json();
+      if (data.success) setAiResources(data.resources);
+    } catch (error) {
+      console.error("Failed to load resources", error);
+    }
+    setLoadingResources(false);
+  };
+
+  const fetchRealtimeChallenge = async () => {
+    setShowChallenge(true);
+    if (aiChallenge) return; 
+
+    setLoadingChallenge(true);
+    try {
+      const response = await fetch("http://localhost:8000/api/challenge", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cluster: topCluster })
+      });
+      const data = await response.json();
+      if (data.success) setAiChallenge(data.challenge);
+    } catch (error) {
+      console.error("Failed to load challenge", error);
+    }
+    setLoadingChallenge(false);
+  };
+
+  const handleAcceptChallenge = () => {
+    confetti({
+        particleCount: 150,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#10B981', '#34D399', '#059669', '#F59E0B'],
+        zIndex: 200 
+    });
+
+    setChallengeAccepted(true);
+    
+    if (user) {
+        localStorage.setItem(`apnidisha_challenge_accepted_${user.id}`, "true");
+    }
+
+    setTimeout(() => {
+        setShowChallenge(false);
+    }, 1500);
   };
 
   const sendMessage = async () => {
@@ -225,7 +297,6 @@ export default function Dashboard() {
       
       <aside className={`w-20 lg:w-64 flex flex-col justify-between border-r transition-colors print:hidden shrink-0 ${isDark ? 'bg-[#111] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
         <div>
-          {/* Sidebar Header */}
           <div className="h-20 flex items-center justify-center lg:justify-start lg:px-6 border-b border-transparent">
             <img 
               src="/image.jpeg" 
@@ -482,7 +553,6 @@ export default function Dashboard() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Task 1: Skill Prep */}
                 <div className={`p-6 rounded-2xl border transition-all hover:scale-[1.02] flex flex-col ${isDark ? 'bg-[#111] border-[#2A2A2A]' : 'bg-white border-slate-200 shadow-sm'}`}>
                     <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center mb-4">
                         <BookOpen className="w-6 h-6" />
@@ -492,13 +562,15 @@ export default function Dashboard() {
                         We've curated the best free courses from YouTube & Coursera for <b>{topCluster}</b>.
                     </p>
                     <div className="mt-auto">
-                        <button className="w-full py-3 rounded-xl bg-indigo-600 text-white text-xs font-black uppercase tracking-wider hover:bg-indigo-700 transition">
-                            Explore Resources
-                        </button>
+                        <button 
+                        onClick={fetchRealtimeResources} 
+                        className="w-full h-12 rounded-xl bg-indigo-600 text-white text-xs font-black uppercase tracking-wider hover:bg-indigo-700 transition flex items-center justify-center gap-2"
+                    >
+                        Explore Resources
+                    </button>
                     </div>
                 </div>
 
-                {/* Task 2: Mentorship (Clean UI) */}
                 <div className={`p-6 rounded-2xl border transition-all hover:scale-[1.02] flex flex-col ${isDark ? 'bg-indigo-500/5 border-indigo-500/20' : 'bg-white border-slate-200 shadow-sm'}`}>
                     <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-4">
                         <MessageSquare className="w-6 h-6" />
@@ -512,7 +584,6 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {/* Task 3: Weekly Goal */}
                 <div className={`p-6 rounded-2xl border transition-all hover:scale-[1.02] flex flex-col ${isDark ? 'bg-[#111] border-[#2A2A2A]' : 'bg-white border-slate-200 shadow-sm'}`}>
                     <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-4">
                         <Trophy className="w-6 h-6" />
@@ -522,9 +593,21 @@ export default function Dashboard() {
                         Small steps lead to big results. Complete this week's <b>{topCluster}</b> task.
                     </p>
                     <div className="mt-auto">
-                        <button className="w-full py-3 rounded-xl bg-emerald-600 text-white text-xs font-black uppercase tracking-wider hover:bg-emerald-700 transition">
-                            View Challenge
-                        </button>
+                        {challengeAccepted ? (
+                            <button 
+                                onClick={() => setShowChallenge(true)} 
+                                className="w-full h-12 rounded-xl bg-emerald-600 text-white text-xs font-black uppercase tracking-wider hover:bg-emerald-700 transition flex items-center justify-center gap-2"
+                            >
+                                <CheckCircle2 className="w-4 h-4" /> Continue Quest
+                            </button>
+                        ) : (
+                            <button 
+                                onClick={fetchRealtimeChallenge} 
+                                className="w-full h-12 rounded-xl bg-emerald-600 text-white text-xs font-black uppercase tracking-wider hover:bg-emerald-700 transition flex items-center justify-center gap-2"
+                            >
+                                View Challenge
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
@@ -553,7 +636,6 @@ export default function Dashboard() {
 
       </main>
 
-      {/* Right Aside Panel */}
       <aside className={`w-80 hidden 2xl:flex flex-col p-6 border-l overflow-y-auto shrink-0 print:hidden ${isDark ? 'bg-[#111] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
         <div className={`p-6 rounded-[2rem] border flex flex-col items-center mb-6 shadow-sm ${isDark ? 'bg-[#0A0A0A] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
             <h3 className={`font-black text-sm mb-4 ${isDark ? 'text-white' : 'text-slate-900'}`}>Profile Readiness</h3>
@@ -593,7 +675,6 @@ export default function Dashboard() {
         </div>
       </aside>
 
-      {/* FLOATING CHATBOT BUTTON */}
       <button 
         onClick={() => setIsChatOpen(!isChatOpen)}
         className="fixed bottom-6 right-6 p-4 rounded-full shadow-2xl transition-transform hover:scale-110 z-40 print:hidden bg-indigo-600 text-white outline-none"
@@ -601,7 +682,6 @@ export default function Dashboard() {
         <MessageSquare className="w-6 h-6" />
       </button>
 
-      {/* CHAT WINDOW PANEL */}
       {isChatOpen && (
         <div className={`fixed bottom-24 right-6 w-80 sm:w-96 h-[500px] rounded-2xl border shadow-2xl flex flex-col overflow-hidden z-50 transition-all print:hidden ${isDark ? 'bg-[#111] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
           
@@ -700,6 +780,105 @@ export default function Dashboard() {
         </div>
       )}
 
+      {showResources && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 print:hidden">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowResources(false)}></div>
+          <div className={`relative w-full max-w-lg p-8 rounded-[2rem] border shadow-2xl z-10 animate-in zoom-in duration-300 ${isDark ? 'bg-[#0A0A0A] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
+            <button onClick={() => setShowResources(false)} className={`absolute top-5 right-5 p-2 rounded-full transition-colors ${isDark ? 'hover:bg-[#222] text-slate-400' : 'hover:bg-slate-100 text-slate-500'}`}>
+              <X className="w-5 h-5" />
+            </button>
+            
+            <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold border mb-4 ${isDark ? 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400' : 'bg-indigo-50 border-indigo-200 text-indigo-600'}`}>
+              <Zap className="w-3.5 h-3.5" /> AI Curated Resources
+            </div>
+            
+            <h2 className={`text-2xl font-black mb-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>Top Learning Materials</h2>
+            <p className={`text-sm mb-6 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Real-time recommendations for <span className="font-bold text-indigo-500">{topCluster}</span>.</p>
+
+            {loadingResources ? (
+                <div className="py-12 flex flex-col items-center justify-center text-indigo-500 space-y-4">
+                    <Loader2 className="w-10 h-10 animate-spin" />
+                    <p className="animate-pulse text-sm font-bold">AI is hunting for the best resources...</p>
+                </div>
+            ) : (
+                <div className="space-y-4">
+                  {aiResources.map((res, idx) => (
+                    <a 
+                      key={idx}
+                      href={res.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`group flex items-center justify-between p-4 rounded-2xl border transition-all hover:scale-[1.02] ${isDark ? 'bg-[#141414] border-[#2A2A2A] hover:border-indigo-500/50' : 'bg-slate-50 border-slate-200 hover:border-indigo-300'}`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${res.platform.toLowerCase().includes('youtube') ? 'bg-red-500/10 text-red-500' : 'bg-blue-500/10 text-blue-500'}`}>
+                          {res.platform.toLowerCase().includes('youtube') ? <PlayCircle className="w-5 h-5" /> : <Award className="w-5 h-5" />}
+                        </div>
+                        <div>
+                          <h4 className={`font-bold text-sm ${isDark ? 'text-white' : 'text-slate-900'}`}>{res.title}</h4>
+                          <p className={`text-[10px] uppercase font-bold tracking-wider mb-1 ${isDark ? 'text-indigo-400' : 'text-indigo-600'}`}>{res.platform}</p>
+                          <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{res.desc}</p>
+                        </div>
+                      </div>
+                      <ExternalLink className={`w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 ${isDark ? 'text-slate-600' : 'text-slate-400'}`} />
+                    </a>
+                  ))}
+                </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {showChallenge && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 print:hidden">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowChallenge(false)}></div>
+          <div className={`relative w-full max-w-lg max-h-[90vh] overflow-y-auto p-8 rounded-[2rem] border shadow-2xl z-10 animate-in zoom-in duration-300 ${isDark ? 'bg-[#0A0A0A] border-[#2A2A2A]' : 'bg-white border-slate-200'}`}>
+            <button onClick={() => setShowChallenge(false)} className={`absolute top-5 right-5 p-2 rounded-full transition-colors ${isDark ? 'hover:bg-[#222] text-slate-400' : 'hover:bg-slate-100 text-slate-500'}`}>
+              <X className="w-5 h-5" />
+            </button>
+            
+            <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold border mb-4 ${isDark ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-emerald-50 border-emerald-200 text-emerald-600'}`}>
+              <Flame className="w-3.5 h-3.5" /> 7-Day Micro Quest
+            </div>
+            
+            {loadingChallenge ? (
+                <div className="py-16 flex flex-col items-center justify-center text-emerald-500 space-y-4">
+                    <Loader2 className="w-10 h-10 animate-spin" />
+                    <p className="animate-pulse text-sm font-bold text-center">Designing a custom mission<br/>just for you...</p>
+                </div>
+            ) : aiChallenge ? (
+                <>
+                  <h2 className={`text-2xl font-black mb-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>{aiChallenge.challenge_title}</h2>
+                  <p className={`text-sm font-medium mb-6 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>Goal: {aiChallenge.goal}</p>
+
+                  <div className="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-emerald-500/20 before:to-transparent">
+                    {aiChallenge.tasks.map((task: any, idx: number) => (
+                      <div key={idx} className={`relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active`}>
+                        <div className={`flex items-center justify-center w-10 h-10 rounded-full border-4 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm ${isDark ? 'bg-[#111] border-[#222] text-emerald-500' : 'bg-white border-slate-100 text-emerald-600'}`}>
+                          <CheckCircle2 className="w-4 h-4" />
+                        </div>
+                        
+                        <div className={`w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-2xl border ${isDark ? 'bg-[#141414] border-[#2A2A2A]' : 'bg-slate-50 border-slate-200'}`}>
+                          <div className={`text-[10px] uppercase font-bold tracking-wider mb-1 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>{task.day}</div>
+                          <h4 className={`font-bold text-sm mb-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>{task.title}</h4>
+                          <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{task.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button 
+                    onClick={handleAcceptChallenge}
+                    disabled={challengeAccepted}
+                    className={`w-full mt-8 py-3 rounded-xl text-white text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${challengeAccepted ? 'bg-emerald-600 opacity-80 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-700'}`}
+                  >
+                    {challengeAccepted ? "Quest Accepted! 🎉" : "Accept Challenge"}
+                  </button>
+                </>
+            ) : null}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Vapi from "@vapi-ai/web";
-import { PhoneOff, Loader2, PhoneCall } from "lucide-react";
+import { Loader2, PhoneCall } from "lucide-react";
 
 const vapiPublicKey = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY || "";
 const vapi = new Vapi(vapiPublicKey); 
